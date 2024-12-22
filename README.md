@@ -47,7 +47,7 @@ Ensure the following tools are installed on your system:
 1. Clone this repository:
    ```bash
    git clone https://github.com/Raqui333/chronoflowproject.git
-   cd chrono-flow-project
+   cd chronoflowproject
    ```
 2. Build and run the containers using Docker Compose:
    ```bash
