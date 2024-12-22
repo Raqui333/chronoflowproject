@@ -19,18 +19,33 @@
 ## Technologies Used
 
 ### Backend:
-- **NestJS**: A progressive Node.js framework for building efficient and scalable server-side applications.
-- **Jest**: For unit and integration testing.
+![Nest.js](https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=nestjs&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)
+
+- **Nest.js**: A progressive Node.js framework for building efficient and scalable server-side applications.
+- **PostgreSQL**: Used for database management due to its reliability and scalability.
 
 ### Frontend:
+![Next.js](https://img.shields.io/badge/Next.js-545454?style=flat&logo=next.js&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
+![Redux](https://img.shields.io/badge/Redux-764ABC?style=flat&logo=redux&logoColor=white)
+
 - **Next.js**: A React framework for production-grade web applications.
 - **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
-- **Jest**: For unit and integration testing.
-
+- **Redux**: For state management to maintain a predictable and centralized state across the application.
+  
 ### Tools and Infrastructure:
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![Docker-compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=flat&logo=docker&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+![pgAdmin](https://img.shields.io/badge/pgAdmin-336791?style=flat&logo=postgresql&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=flat&logo=jest&logoColor=white)
+    
 - **Docker**: For containerization of the application.
 - **Docker Compose**: For managing multi-container applications.
 - **Git**: Version control system.
+- **pgAdmin**: For creating, managing, and querying databases efficiently.
+- **Jest**: For unit and integration testing.
 
 ---
 
@@ -56,3 +71,4 @@ Ensure the following tools are installed on your system:
 3. Access the application:
 - Frontend: http://localhost:3000
 - Backend: http://localhost:5000
+- Database: http://localhost:5432
