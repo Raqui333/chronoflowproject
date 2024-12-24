@@ -1,14 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { Prisma } from '@prisma/client';
 
-const mockUsersService = {
-  create: jest.fn(),
-};
+import { CreateUserDto } from './dto/users.dto';
+import { UpdateUserDto } from './dto/users.dto';
 
 describe('UsersController', () => {
+  const MockUsersService = {
+    create: jest.fn(),
+  };
+
   let controller: UsersController;
+  let service: UsersService;
+
+  const mockNewUserDto: CreateUserDto = {
+    name: 'John Doe',
+    username: 'johndoe',
+    email: 'john.doe@example.com',
+    password: 'password123',
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,36 +27,34 @@ describe('UsersController', () => {
       providers: [
         {
           provide: UsersService,
-          useValue: mockUsersService,
+          useValue: MockUsersService,
         },
       ],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
+    service = module.get<UsersService>(UsersService);
   });
 
   describe('/users (POST)', () => {
-    it('should resolve an createUserDto object', async () => {
-      const createUserDto: Prisma.usersCreateInput = {
-        name: 'John Doe',
-        username: 'johndoe',
-        email: 'john.doe@example.com',
-        password: 'password123',
-      };
+    it('should be defined', () => {
+      expect(controller).toBeDefined();
+    });
 
-      const expectedResolve = {
+    it('should return the new user', async () => {
+      const expected_resolve = {
         id: 1,
-        ...createUserDto,
-        password: 'hashedpassword',
+        ...mockNewUserDto,
+        password: 'password_hash',
         created_at: new Date(),
       };
 
-      mockUsersService.create.mockResolvedValue(expectedResolve);
+      MockUsersService.create.mockResolvedValue(expected_resolve);
 
-      const result = await controller.create(createUserDto);
+      const result = await controller.create(mockNewUserDto);
 
-      expect(mockUsersService.create).toHaveBeenCalledWith(createUserDto);
-      expect(result).toEqual(expectedResolve);
+      expect(result).toEqual(expected_resolve);
+      expect(service.create).toHaveBeenCalledWith(mockNewUserDto);
     });
   });
 });
