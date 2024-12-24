@@ -21,9 +21,11 @@
 ### Backend:
 ![Nest.js](https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=nestjs&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-%232D3748?style=flat&logo=prisma)
 
 - **Nest.js**: A progressive Node.js framework for building efficient and scalable server-side applications.
 - **PostgreSQL**: Used for database management due to its reliability and scalability.
+- **Prisma**: Simplifies database integration, providing a robust and easy-to-use API for data operations.
 
 ### Frontend:
 ![Next.js](https://img.shields.io/badge/Next.js-545454?style=flat&logo=next.js&logoColor=white)
