@@ -3,8 +3,12 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
+
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '../database/database.service';
+
+import { CreateUserDto } from './dto/users.dto';
+import { UpdateUserDto } from './dto/users.dto';
 
 import { createHash } from 'crypto'; // for hashing the password
 
@@ -16,7 +20,7 @@ export class UsersService {
     return createHash('sha256').update(password).digest('hex');
   }
 
-  async create(createUserDto: Prisma.usersCreateInput) {
+  async create(createUserDto: CreateUserDto) {
     try {
       const created_user = await this.databaseService.users.create({
         data: {
@@ -29,9 +33,9 @@ export class UsersService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // makes sure that the sequence is reset to the last id if the creation fails
-        await this.databaseService.$queryRaw`
-        SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
-      `;
+        await this.databaseService
+          .$queryRaw`SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));`;
+
         throw new ConflictException(
           `Already exists a user with this ${error.meta.target[0]}`,
           { description: 'Unique constraint violation' },
@@ -59,7 +63,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: Prisma.usersUpdateInput) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
       updateUserDto.password = this.hashPassword(
         updateUserDto.password.toString(),
