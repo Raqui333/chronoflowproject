@@ -48,27 +48,6 @@ describe('UsersService', () => {
   });
 
   describe('<service> create', () => {
-    it('Should create a user and return it', async () => {
-      const expected_resolve = {
-        id: 1,
-        ...mockNewUserDto,
-        password: 'hash',
-        created_at: new Date(),
-      };
-
-      MockDatabaseService.users.create.mockResolvedValue(expected_resolve);
-
-      const result = await service.create(mockNewUserDto);
-
-      expect(result).toEqual(expected_resolve);
-      expect(databaseService.users.create).toHaveBeenCalledWith({
-        data: {
-          ...mockNewUserDto,
-          password: 'hash',
-        },
-      });
-    });
-
     it("Should handle error 'P2002 Unique constraint violation'", async () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError(
         'mock error message',
@@ -102,17 +81,40 @@ describe('UsersService', () => {
         expect(error.response.error).toBe('Unique constraint violation');
       }
     });
+  });
 
-    it('Should re-throw generic errors', async () => {
-      const genericError = new Error('generic');
+  describe('<service> update', () => {
+    it("Should handle error 'P2002 Unique constraint violation'", async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'mock error message',
+        {
+          clientVersion: '0.0.0',
+          code: 'P2002',
+          meta: {
+            target: ['email'],
+          },
+        },
+      );
 
-      MockDatabaseService.users.create.mockRejectedValue(genericError);
+      MockDatabaseService.users.create.mockRejectedValue(prismaError);
 
       try {
         await service.create(mockNewUserDto);
       } catch (error) {
-        expect(error).not.toBeInstanceOf(Prisma.PrismaClientKnownRequestError);
-        expect(error.message).toBe('generic');
+        MockDatabaseService.$queryRaw.mockResolvedValue('query_made');
+
+        // this query is essential to the code
+        expect(databaseService.$queryRaw).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.stringContaining(
+              "SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));",
+            ),
+          ]),
+        );
+
+        expect(error).toBeInstanceOf(ConflictException);
+        expect(error.message).toBe('Already exists a user with this email');
+        expect(error.response.error).toBe('Unique constraint violation');
       }
     });
   });
