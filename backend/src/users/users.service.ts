@@ -25,6 +25,8 @@ export class UsersService {
       const created_user = await this.databaseService.users.create({
         data: {
           ...createUserDto,
+          // nomalize username
+          username: createUserDto.username.toLowerCase(),
           // hash the password before storing it in the database
           password: this.hashPassword(createUserDto.password),
         },
@@ -32,7 +34,7 @@ export class UsersService {
       return created_user;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // makes sure that the sequence is reset to the last id if the creation fails
+        // prevents table ID sequence from changing upon error
         await this.databaseService
           .$queryRaw`SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));`;
 
@@ -42,7 +44,7 @@ export class UsersService {
         );
       }
 
-      // thows generic errors
+      // re-throw generic errors
       throw error;
     }
   }
@@ -64,6 +66,7 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    // hashes the new password
     if (updateUserDto.password) {
       updateUserDto.password = this.hashPassword(
         updateUserDto.password.toString(),
@@ -78,7 +81,7 @@ export class UsersService {
       return updated_user;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // makes sure that the sequence is reset to the last id if the update fails
+        // prevents table ID sequence from changing upon error
         await this.databaseService.$queryRaw`
         SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
       `;
@@ -88,7 +91,7 @@ export class UsersService {
         );
       }
 
-      // thows generic errors
+      // re-throw generic errors
       throw error;
     }
   }
@@ -98,12 +101,18 @@ export class UsersService {
       const removed_user = await this.databaseService.users.delete({
         where: { id },
       });
+
+      // make sure the new user ID is aways the next number after the last user
+      await this.databaseService.$queryRaw`
+      SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
+    `;
+
       return removed_user;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError)
         throw new NotFoundException('User not found');
 
-      // thows generic errors
+      // re-throw generic errors
       throw error;
     }
   }
