@@ -32,15 +32,6 @@ describe('AppController (e2e)', () => {
   });
 
   describe('/users', () => {
-    it('/ (GET) should return all users', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/users')
-        .expect(200);
-
-      expect(response.body.length).toBeGreaterThan(0);
-      expect(response.body[0].password).not.toBeDefined();
-    });
-
     it('/ (POST) should add a user to database', async () => {
       const response = await request(app.getHttpServer())
         .post('/users')
@@ -50,6 +41,15 @@ describe('AppController (e2e)', () => {
       test_user_id = response.body.user_id;
 
       expect(response.body.message).toEqual('User successfully created!');
+    });
+
+    it('/ (GET) should return all users', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/users')
+        .expect(200);
+
+      expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body[0].password).not.toBeDefined();
     });
 
     it('/:id (GET) should return one user', async () => {
