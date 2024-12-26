@@ -27,6 +27,6 @@ jobs:
           cd backend
           npm install
           npx prisma generate && npx prisma db push
-          npx jest test/app.e2e-spec.ts
+          npm run test:e2e
         env:
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_database
