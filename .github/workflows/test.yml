@@ -18,9 +18,9 @@ jobs:
           services: |
             database
         env:
-          POSTGRES_USER: postgres_user
-          POSTGRES_PASSWORD: postgres_password
-          POSTGRES_DB: database_name
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_database
       
       - name: Test e2e on backend
         run: |
@@ -29,4 +29,4 @@ jobs:
           npx prisma generate && npx prisma db push
           npx jest test/app.e2e-spec.ts
         env:
-          DATABASE_URL: postgresql://chronoflow:chronoflow@localhost:5432/chronoflow
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_database
