@@ -1,0 +1,29 @@
+name: Docker Compose E2E Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run docker-compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          services: |
+            database
+        env:
+          POSTGRES_USER: postgres_user
+          POSTGRES_PASSWORD: postgres_password
+          POSTGRES_DB: database_name
+      
+      - name: Test e2e on backend
+        run: |
+          cd backend
+          npx prisma generate && npx prisma db push
+          npx jest test/app.e2e-spec.ts
