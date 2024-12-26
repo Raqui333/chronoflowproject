@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts-alpine
 
 WORKDIR /app
 
@@ -12,4 +12,4 @@ RUN npm run build
 
 EXPOSE 5000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma db push && npm run start:prod"]

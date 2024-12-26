@@ -6,9 +6,11 @@ services:
       - "5000:5000"
     depends_on:
       - database
+    networks:
+      - chronoflownetwork
 
   database:
-    image: postgres:17.2
+    image: postgres:17.2-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -17,6 +19,8 @@ services:
       - "5432:5432"
     volumes:
       - chronosflow_db_data:/var/lib/postgresql/data
+    networks:
+      - chronoflownetwork
 
   frontend:
     build:
@@ -25,6 +29,12 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    networks:
+      - chronoflownetwork
 
 volumes:
   chronosflow_db_data:
+
+networks:
+  chronoflownetwork:
+    driver: bridge
