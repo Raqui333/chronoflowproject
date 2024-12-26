@@ -27,6 +27,10 @@
 - **PostgreSQL**: Used for database management due to its reliability and scalability.
 - **Prisma**: Simplifies database integration, providing a robust and easy-to-use API for data operations.
 
+#### Entity-Relationship Diagram (ERD)
+The Entity-Relationship Diagram (ERD) provides a high-level overview of the database structure and the relationships between entities in the system. This diagram helps visualize how data flows and how different components of the application interact with each other.
+![ERD](docs/erd.png)
+
 ### Frontend:
 ![Next.js](https://img.shields.io/badge/Next.js-545454?style=flat&logo=next.js&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
@@ -66,11 +70,24 @@ Ensure the following tools are installed on your system:
    git clone https://github.com/Raqui333/chronoflowproject.git
    cd chronoflowproject
    ```
-2. Build and run the containers using Docker Compose:
+2. Set up environment variables by creating two .env files based on the .env.example file: one in the root directory and another in the backend directory:
+   ```javascript
+   // .env
+   POSTGRES_USER="postgres_user"
+   POSTGRES_PASSWORD="postgres_password"
+   POSTGRES_DB="database_name"
+   ```
+
+   ```javascript
+   // backend/.env
+   DATABASE_URL="postgresql://<postgres_user>:<postges_password>@localhost:5432/database_name"
+   ```
+
+3. Build and run the containers using Docker Compose:
    ```bash
    docker-compose up --build
    ```
-3. Access the application:
+4. Access the application:
 - Frontend: http://localhost:3000
 - Backend: http://localhost:5000
 - Database: http://localhost:5432
