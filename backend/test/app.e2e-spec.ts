@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
@@ -20,6 +20,14 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    );
+
     await app.init();
   });
 
@@ -30,6 +38,7 @@ describe('AppController (e2e)', () => {
         .expect(200);
 
       expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body[0].password).not.toBeDefined();
     });
 
     it('/ (POST) should add a user to database', async () => {
@@ -38,9 +47,9 @@ describe('AppController (e2e)', () => {
         .send(new_user)
         .expect(201);
 
-      test_user_id = response.body.id;
+      test_user_id = response.body.user_id;
 
-      expect(response.body.username).toEqual(new_user.username);
+      expect(response.body.message).toEqual('User successfully created!');
     });
 
     it('/:id (GET) should return one user', async () => {
@@ -49,17 +58,16 @@ describe('AppController (e2e)', () => {
         .expect(200);
 
       expect(response.body.id).toEqual(test_user_id);
+      expect(response.body.password).not.toBeDefined();
     });
 
     it('/:id (PATCH) should updates one user data', async () => {
       const response = await request(app.getHttpServer())
         .patch(`/users/${test_user_id}`)
-        .send({
-          username: 'johndoe123',
-        })
+        .send({ username: 'johndoe123' })
         .expect(200);
 
-      expect(response.body.username).toEqual('johndoe123');
+      expect(response.body.message).toEqual('User successfully updated!');
     });
 
     it('/:id (DELETE) should delete one user from database', async () => {
@@ -68,6 +76,7 @@ describe('AppController (e2e)', () => {
         .expect(200);
 
       expect(response.body.id).toEqual(test_user_id);
+      expect(response.body.password).not.toBeDefined();
     });
   });
 });
