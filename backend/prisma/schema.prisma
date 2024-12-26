@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -8,10 +9,49 @@ datasource db {
 }
 
 model users {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(255)
-  username   String    @unique @db.VarChar(50)
-  email      String    @unique @db.VarChar(255)
-  password   String    @db.Char(64)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(255)
+  username   String     @unique(map: "users_unique_username") @db.VarChar
+  email      String     @unique(map: "users_unique_email") @db.VarChar(255)
+  password   String     @db.VarChar(255)
+  created_at DateTime   @db.Date
+  last_login DateTime   @db.Date
+  projects   projects[]
+  tasks      tasks[]
+}
+
+model tasks {
+  id               Int      @id @default(autoincrement())
+  title            String   @db.VarChar(255)
+  description      String?  @db.VarChar(255)
+  start_date       DateTime @db.Date
+  end_date         DateTime @db.Date
+  status           STATUS
+  priority         PRIORITY
+  project_id       Int
+  assigned_user_id Int?
+  parent_task_id   Int
+  users            users?   @relation(fields: [assigned_user_id], references: [id], map: "assigned_user_id_fk")
+  project          projects @relation(fields: [project_id], references: [id], onDelete: Cascade, map: "project_id_fk")
+}
+
+model projects {
+  id          Int     @id @default(autoincrement())
+  title       String  @db.VarChar(255)
+  description String? @db.VarChar(255)
+  creator_id  Int
+  users       users   @relation(fields: [creator_id], references: [id], onDelete: Cascade, map: "creator_id_fk")
+  tasks       tasks[]
+}
+
+enum PRIORITY {
+  LOW
+  MIDDLE
+  HIGH
+}
+
+enum STATUS {
+  TODO
+  ONGOING
+  COMPLETED
 }
