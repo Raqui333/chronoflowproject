@@ -6,22 +6,17 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
-  ValidationPipe,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
-
-import { CreateUserDto } from './dto/users.dto';
-import { UpdateUserDto } from './dto/users.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: Prisma.usersCreateInput) {
     return this.usersService.create(createUserDto);
   }
 
@@ -31,20 +26,20 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @Param('id') id: number,
+    @Body() updateUserDto: Prisma.usersUpdateInput,
   ) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number) {
+  delete(@Param('id') id: number) {
     return this.usersService.delete(id);
   }
 }
