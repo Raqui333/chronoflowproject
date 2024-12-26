@@ -7,50 +7,64 @@ import {
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '../database/database.service';
 
-import { CreateUserDto } from './dto/users.dto';
-import { UpdateUserDto } from './dto/users.dto';
-
-import { createHash } from 'crypto'; // for hashing the password
+import { randomBytes, pbkdf2Sync } from 'crypto'; // for hashing the password
 
 @Injectable()
 export class UsersService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  private hashPassword(password: string) {
-    return createHash('sha256').update(password).digest('hex');
+  private errorMap = {
+    P2002: {
+      exception: ConflictException,
+      message: 'Unique constraint violation',
+      description: 'P2002',
+    },
+    P2025: {
+      exception: NotFoundException,
+      message: 'Record to delete does not exist',
+      description: 'P2025',
+    },
+  };
+
+  private prismaClientErrorHandle(error: Prisma.PrismaClientKnownRequestError) {
+    // handle PrismaClient errors
+    const mappedError = this.errorMap[error.code];
+    if (mappedError) {
+      throw new mappedError.exception(mappedError.message, {
+        description: mappedError.description,
+      });
+    }
   }
 
-  async create(createUserDto: CreateUserDto) {
+  private hashPassword(password: string) {
+    const salt = randomBytes(16).toString('hex');
+    const hash = pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return `${hash}.${salt}`;
+  }
+
+  async create(createUserDto: Prisma.usersCreateInput) {
     try {
-      const created_user = await this.databaseService.users.create({
+      const { id } = await this.databaseService.users.create({
         data: {
           ...createUserDto,
-          // nomalize username
-          username: createUserDto.username.toLowerCase(),
-          // hash the password before storing it in the database
-          password: this.hashPassword(createUserDto.password),
+          username: createUserDto.username.toLowerCase(), // normalize username
+          password: this.hashPassword(createUserDto.password), // hashing password
+          created_at: new Date(),
+          last_login: new Date(),
         },
       });
-      return created_user;
+      return { message: 'User successfully created!', user_id: id };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // prevents table ID sequence from changing upon error
-        await this.databaseService
-          .$queryRaw`SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));`;
-
-        throw new ConflictException(
-          `Already exists a user with this ${error.meta.target[0]}`,
-          { description: 'Unique constraint violation' },
-        );
-      }
-
-      // re-throw generic errors
-      throw error;
+      this.prismaClientErrorHandle(error); // handle PrismaClient errors
+      throw error; // re-throw generic errors
     }
   }
 
   async findAll() {
-    const users_array = await this.databaseService.users.findMany();
+    const users_array = await this.databaseService.users.findMany({
+      omit: { password: true },
+    });
+
     if (!users_array.length) throw new NotFoundException('No users found');
     return users_array;
   }
@@ -58,14 +72,14 @@ export class UsersService {
   async findOne(id: number) {
     const user = await this.databaseService.users.findUnique({
       where: { id },
+      omit: { password: true },
     });
 
     if (!user) throw new NotFoundException('User not found');
-
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: Prisma.usersUpdateInput) {
     // hashes the new password
     if (updateUserDto.password) {
       updateUserDto.password = this.hashPassword(
@@ -74,25 +88,14 @@ export class UsersService {
     }
 
     try {
-      const updated_user = await this.databaseService.users.update({
+      await this.databaseService.users.update({
         where: { id },
         data: updateUserDto,
       });
-      return updated_user;
+      return { message: 'User successfully updated!', user_id: id };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // prevents table ID sequence from changing upon error
-        await this.databaseService.$queryRaw`
-        SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
-      `;
-        throw new ConflictException(
-          `Already exists a user with this ${error.meta.target[0]}`,
-          { description: 'Unique constraint violation' },
-        );
-      }
-
-      // re-throw generic errors
-      throw error;
+      this.prismaClientErrorHandle(error); // handle PrismaClient errors
+      throw error; // re-throw generic errors
     }
   }
 
@@ -100,20 +103,12 @@ export class UsersService {
     try {
       const removed_user = await this.databaseService.users.delete({
         where: { id },
+        omit: { password: true },
       });
-
-      // make sure the new user ID is aways the next number after the last user
-      await this.databaseService.$queryRaw`
-      SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
-    `;
-
       return removed_user;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError)
-        throw new NotFoundException('User not found');
-
-      // re-throw generic errors
-      throw error;
+      this.prismaClientErrorHandle(error); // handle PrismaClient errors
+      throw error; // re-throw generic errors
     }
   }
 }
