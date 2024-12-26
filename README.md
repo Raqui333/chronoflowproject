@@ -29,7 +29,10 @@
 
 #### Entity-Relationship Diagram (ERD)
 The Entity-Relationship Diagram (ERD) provides a high-level overview of the database structure and the relationships between entities in the system. This diagram helps visualize how data flows and how different components of the application interact with each other.
+
 ![ERD](docs/erd.png)
+
+> For more detailed information about the database schema and entity relationships, you can refer to the docs/schema folder, with SQL scripts and the ERD file.
 
 ### Frontend:
 ![Next.js](https://img.shields.io/badge/Next.js-545454?style=flat&logo=next.js&logoColor=white)
@@ -80,7 +83,7 @@ Ensure the following tools are installed on your system:
 
    ```javascript
    // backend/.env
-   DATABASE_URL="postgresql://<postgres_user>:<postges_password>@localhost:5432/database_name"
+   DATABASE_URL="postgresql://<postgres_user>:<postges_password>@chronoflownetwork:5432/database_name"
    ```
 
 3. Build and run the containers using Docker Compose:
