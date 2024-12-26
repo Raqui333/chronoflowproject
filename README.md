@@ -36,7 +36,7 @@
 - **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
 - **Redux**: For state management to maintain a predictable and centralized state across the application.
   
-### Tools and Infrastructure:
+### Tools and Infrastructure (DevOps):
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 ![Docker-compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=flat&logo=docker&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
