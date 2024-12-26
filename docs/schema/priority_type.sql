@@ -1,0 +1,9 @@
+-- Type: PRIORITY
+
+-- DROP TYPE IF EXISTS public."PRIORITY";
+
+CREATE TYPE public."PRIORITY" AS ENUM
+    ('LOW', 'MIDDLE', 'HIGH');
+
+ALTER TYPE public."PRIORITY"
+    OWNER TO chronosflow;
