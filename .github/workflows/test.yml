@@ -27,3 +27,5 @@ jobs:
           cd backend
           npx prisma generate && npx prisma db push
           npx jest test/app.e2e-spec.ts
+        env:
+          DATABASE_URL: postgresql://chronoflow:chronoflow@chronoflownetwork:5432/chronoflow
