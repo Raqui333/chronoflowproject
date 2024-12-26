@@ -25,7 +25,8 @@ jobs:
       - name: Test e2e on backend
         run: |
           cd backend
+          npm install
           npx prisma generate && npx prisma db push
           npx jest test/app.e2e-spec.ts
         env:
-          DATABASE_URL: postgresql://chronoflow:chronoflow@chronoflownetwork:5432/chronoflow
+          DATABASE_URL: postgresql://chronoflow:chronoflow@localhost:5432/chronoflow
