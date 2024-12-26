@@ -18,7 +18,7 @@ describe('UsersController', () => {
     service = module.get<UsersService>(UsersService);
   });
 
-  describe('/users (POST)', () => {
+  describe('/users', () => {
     it('should be defined', () => {
       expect(controller).toBeDefined();
     });
