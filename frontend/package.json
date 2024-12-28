@@ -1,6 +1,8 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
+  "name": "chronoflowproject-frontend",
+  "version": "0.0.1",
+  "description": "Frontend for Chronoflowproject",
+  "author": "Kleber Silva (https://github.com/Raqui333)",
   "private": true,
   "scripts": {
     "dev": "next dev",
