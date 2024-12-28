@@ -5,12 +5,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primaryButtonBgColor: #0a0a0a;
+  --primaryButtonFgColor: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --primaryButtonBgColor: #ffffff;
+    --primaryButtonFgColor: #171717;
   }
 }
 
@@ -18,4 +22,13 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  background: var(--primaryButtonBgColor);
+  color: var(--primaryButtonFgColor);
+}
+
+button:hover {
+  background-color: gray;
 }
