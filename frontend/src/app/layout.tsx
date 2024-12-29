@@ -1,5 +1,12 @@
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 import type { Metadata } from 'next';
-import './globals.css';
+
+import ReduxProvider from '@/redux/reduxProvider';
+import MaterialThemeProvider from '@/material/materialThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Chrono Flow Project',
@@ -13,7 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ReduxProvider>
+          <MaterialThemeProvider>{children}</MaterialThemeProvider>
+        </ReduxProvider>
+      </body>
     </html>
   );
 }
