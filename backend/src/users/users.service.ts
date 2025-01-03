@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { DatabaseService } from '../database/database.service';
+import { DatabaseService } from '@/database/database.service';
 
 import { randomBytes, pbkdf2Sync } from 'crypto'; // for hashing the password
 
