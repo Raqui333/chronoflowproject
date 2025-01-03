@@ -13,6 +13,8 @@
 - Comprehensive test coverage with **Jest**.
 - Written entirely in **TypeScript** for type safety and maintainability.
 - Scalable and modular architecture for future enhancements.
+- Continuous integration and deployment using **GitHub Actions**.
+- Secure user authentication with **JWT (JSON Web Tokens)** and **Passport**.
 
 ---
 
@@ -22,10 +24,14 @@
 [![Nest.js](https://img.shields.io/badge/Nest.js-E0234E?style=flat&logo=nestjs&logoColor=white)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-%232D3748?style=flat&logo=prisma)](https://www.prisma.io/)
+[![JWT](https://img.shields.io/badge/JWT-545454?style=flat&logo=json-web-tokens)](https://jwt.io/)
+[![Passport](https://img.shields.io/badge/Passport-2E2E2E?style=flat&logo=passport)](http://www.passportjs.org/)
 
 - **Nest.js**: A progressive Node.js framework for building efficient and scalable server-side applications.
 - **PostgreSQL**: Used for database management due to its reliability and scalability.
 - **Prisma**: Simplifies database integration, providing a robust and easy-to-use API for data operations.
+- **JWT**: For secure, stateless authentication, providing a compact way to authenticate users and protect routes.
+- **Passport**: A flexible authentication middleware, integrating seamlessly with **JWT** and **Nest.js**.
 
 #### Entity-Relationship Diagram (ERD)
 The Entity-Relationship Diagram (ERD) provides a high-level overview of the database structure and the relationships between entities in the system. This diagram helps visualize how data flows and how different components of the application interact with each other.
@@ -52,12 +58,14 @@ The Entity-Relationship Diagram (ERD) provides a high-level overview of the data
 [![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)](https://git-scm.com/)
 [![pgAdmin](https://img.shields.io/badge/pgAdmin-336791?style=flat&logo=postgresql&logoColor=white)](https://www.pgadmin.org/)
 [![Jest](https://img.shields.io/badge/Jest-C21325?style=flat&logo=jest&logoColor=white)](https://jestjs.io/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat&logo=github-actions&logoColor=white)](https://github.com/features/actions)
     
 - **Docker**: For containerization of the application.
 - **Docker Compose**: For managing multi-container applications.
 - **Git**: Version control system.
 - **pgAdmin**: For creating, managing, and querying databases efficiently.
 - **Jest**: For unit and integration testing.
+- **GitHub Actions**: For automating workflows such as continuous integration (CI) and continuous deployment (CD).
 
 ---
 
@@ -86,8 +94,13 @@ Ensure the following tools are installed on your system:
 
    ```javascript
    // backend/.env
-   DATABASE_URL="postgresql://<postgres_user>:<postges_password>@chronoflownetwork:5432/database_name"
+   DATABASE_URL="postgresql://<postgres_user>:<postges_password>@chronoflownetwork:5432/<database_name>"
+   JWT_SECRET="randomphrase"
    ```
+
+   > ⚠️ **Warning:** **do not use easily guessable passwords or phrases**. Weak passwords can be easily exploited and compromise the security of your application and database.
+   
+   > **NOTE:** In the `DATABASE_URL`, the network name may change depending on how you run the steps. By default, when using the `docker-compose` file, the network name will be `chronoflownetwork`. However, if running manually, you might need to change it to `localhost`.
 
 3. Build and run the containers using Docker Compose:
    ```bash
