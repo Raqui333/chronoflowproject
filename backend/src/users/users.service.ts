@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { DatabaseService } from '../database/database.service';
+import { DatabaseService } from '@/database/database.service';
 
 import { randomBytes, pbkdf2Sync } from 'crypto'; // for hashing the password
 
@@ -42,6 +42,12 @@ export class UsersService {
     return `${hash}.${salt}`;
   }
 
+  verifyPassword(password: string, hashedPassword: string) {
+    const [originalHash, salt] = hashedPassword.split('.');
+    const hash = pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return hash === originalHash;
+  }
+
   async create(createUserDto: Prisma.usersCreateInput) {
     try {
       const { id } = await this.databaseService.users.create({
@@ -73,6 +79,15 @@ export class UsersService {
     const user = await this.databaseService.users.findUnique({
       where: { id },
       omit: { password: true },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async findOneByUsername(username: string) {
+    const user = await this.databaseService.users.findUnique({
+      where: { username },
     });
 
     if (!user) throw new NotFoundException('User not found');
