@@ -1,18 +1,17 @@
-import {
-  Controller,
-  HttpCode,
-  Post,
-  Get,
-  Body,
-  Request,
-  Req,
-} from '@nestjs/common';
+import { Controller, HttpCode, Post, Get, Body, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '@/decorators/custom.decorator';
+import { Prisma } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Public()
+  @Post('register')
+  register(@Body() createUserDto: Prisma.usersCreateInput) {
+    return this.authService.register(createUserDto);
+  }
 
   @Public()
   @HttpCode(200)
