@@ -32,6 +32,13 @@ services:
     networks:
       - chronoflownetwork
 
+  nginx:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+
 volumes:
   chronosflow_db_data:
 
