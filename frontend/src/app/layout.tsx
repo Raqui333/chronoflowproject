@@ -5,6 +5,7 @@ import '@fontsource/roboto/700.css';
 
 import type { Metadata } from 'next';
 
+import NextAuthProvider from '@/next-auth/nextAuthProvider';
 import ReduxProvider from '@/redux/reduxProvider';
 import MaterialThemeProvider from '@/material/materialThemeProvider';
 
@@ -21,9 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReduxProvider>
-          <MaterialThemeProvider>{children}</MaterialThemeProvider>
-        </ReduxProvider>
+        <NextAuthProvider>
+          <ReduxProvider>
+            <MaterialThemeProvider>{children}</MaterialThemeProvider>
+          </ReduxProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );
