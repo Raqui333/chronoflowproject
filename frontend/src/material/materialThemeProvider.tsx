@@ -1,7 +1,9 @@
 'use client';
 
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { setTheme } from '@/redux/features/theme/themeSlice';
+import { useEffect, useState } from 'react';
 
 export const darkTheme = createTheme({
   palette: {
@@ -16,7 +18,7 @@ export const darkTheme = createTheme({
     },
     background: {
       default: '#000000',
-      paper: '#121212',
+      paper: '#232323',
     },
     text: {
       primary: '#ffffff',
@@ -39,7 +41,7 @@ export const lightTheme = createTheme({
     },
     background: {
       default: '#ffffff',
-      paper: '#f4f4f5',
+      paper: '#f6f7f9',
     },
     text: {
       primary: '#000000',
@@ -50,11 +52,25 @@ export const lightTheme = createTheme({
 });
 
 export default function MaterialThemeProvider({
+  initialTheme,
   children,
 }: {
+  initialTheme?: 'light' | 'dark';
   children: React.ReactNode;
 }) {
-  const theme = useAppSelector((state) => state.theme.value);
+  const [theme, setThemeState] = useState(initialTheme);
+  const client_theme = useAppSelector((state) => state.theme.value);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // only run at first reload, sync the redux theme with cookies theme
+    dispatch(setTheme(theme as 'dark' | 'light'));
+  }, []);
+
+  useEffect(() => {
+    // run every time client_theme (redux) changes
+    if (client_theme !== theme) setThemeState(client_theme);
+  }, [client_theme]);
 
   return (
     <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>

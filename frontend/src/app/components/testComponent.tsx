@@ -23,11 +23,14 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 export default function TestComponent() {
   const { data: session, status } = useSession();
 
-  console.log(session);
-
   const count = useAppSelector((state) => state.counter.value);
   const theme = useAppSelector((state) => state.theme.value);
   const dispatch = useAppDispatch();
+
+  const handleChangeTheme = (theme: string) => {
+    document.cookie = `theme=${theme}; path=/`;
+    dispatch(setTheme(theme as 'light' | 'dark'));
+  };
 
   if (status === 'loading') {
     return (
@@ -99,9 +102,7 @@ export default function TestComponent() {
             <FormControl>
               <RadioGroup
                 value={theme}
-                onChange={(event) =>
-                  dispatch(setTheme(event.target.value as 'dark' | 'light'))
-                }
+                onChange={(event) => handleChangeTheme(event.target.value)}
                 row
               >
                 <FormControlLabel

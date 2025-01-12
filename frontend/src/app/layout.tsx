@@ -4,6 +4,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 
 import NextAuthProvider from '@/next-auth/nextAuthProvider';
 import ReduxProvider from '@/redux/reduxProvider';
@@ -14,17 +15,22 @@ export const metadata: Metadata = {
   description: 'Task flow plataform',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const theme = cookieStore.get('theme')?.value;
+
   return (
     <html lang="en">
       <body>
         <NextAuthProvider>
           <ReduxProvider>
-            <MaterialThemeProvider>{children}</MaterialThemeProvider>
+            <MaterialThemeProvider initialTheme={theme as 'light' | 'dark'}>
+              {children}
+            </MaterialThemeProvider>
           </ReduxProvider>
         </NextAuthProvider>
       </body>
