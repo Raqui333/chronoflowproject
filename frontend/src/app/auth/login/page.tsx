@@ -17,11 +17,8 @@ import {
   InputAdornment,
   IconButton,
   Alert,
-  useMediaQuery,
 } from '@mui/material';
 
-import Image from 'next/image';
-import Logo from '@/logo.png';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
@@ -76,44 +73,24 @@ export default function Login() {
         height: '100vh',
         color: 'primary.main',
       }}
+      maxWidth={false}
       disableGutters
     >
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'space-between',
           flexGrow: '1',
-          bgcolor: 'background.paper',
+          backgroundImage: 'url(/login_side.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           height: '100vh',
-          paddingTop: '3ch',
-          paddingBottom: '3ch',
         }}
-      >
-        <Box sx={{ alignSelf: 'flex-start', paddingLeft: '2ch' }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-            Chrono Flow Project
-          </Typography>
-        </Box>
-        <Box>
-          <Image src={Logo} alt="test" width={450} />
-        </Box>
-        <Box sx={{ alignSelf: 'flex-start', paddingLeft: '2ch' }}>
-          <Typography variant="h5">
-            Welcome to the Chrono task manager
-          </Typography>
-          <Typography variant="subtitle1" sx={{ color: 'text.secondary' }}>
-            Start managing your tasks faster and better
-          </Typography>
-        </Box>
-      </Box>
+      />
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          flexGrow: '3',
+          flexGrow: '1',
           height: '100vh',
           bgcolor: 'background.default',
         }}
